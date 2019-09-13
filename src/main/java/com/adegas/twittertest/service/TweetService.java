@@ -4,6 +4,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import javax.annotation.PostConstruct;
+
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +32,12 @@ public class TweetService {
 	@Autowired
 	private TweetRepository repository;
 	
+	@Autowired
+	private TopUsersByFollowersService topUsersService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(TweetService.class);
 	
+	@PostConstruct
 	@Scheduled(cron = "10 * * * * *")
 	public void getTweets() {
 		Set<String> tags = new HashSet<>();
@@ -47,9 +55,13 @@ public class TweetService {
 				} catch (TwitterException e) {
 					throw new RuntimeException();
 				}
-			}).flatMap(this::queryResultToTweet).forEach(repository::save);
+			}).flatMap(this::queryResultToTweet).forEach(this.repository::save);
 		
-		repository.findAll().stream().map(tweet -> tweet.getUserName()).forEach(System.out::println);
+		JavaSparkContext context = new JavaSparkContext();
+		JavaRDD<Tweet> rdd = context.parallelize(this.repository.findAll()).cache();
+		context.close();
+		
+		this.topUsersService.processTop5(rdd);
 	}
 	
 	private Query createQueryForTag(String tag) {
