@@ -1,24 +1,28 @@
 package com.adegas.twittertest.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.io.Serializable;
+
+import org.springframework.data.annotation.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "top_users_by_followers")
-@Getter @Setter @AllArgsConstructor @NoArgsConstructor
-public class TopUsersByFollowers {
+@Getter @Setter 
+@AllArgsConstructor 
+@NoArgsConstructor
+public class TopUsersByFollowers implements Serializable {
 	
-	@Id @Column(name = "user_id") Long id;
+	/**
+	 * Serialization number.
+	 */
+	private static final long serialVersionUID = -6888214942819168948L;
+
+	@Id Long id;
 	
-	@Column(name = "user_name") String userName;
+	String userName;
 	
-	@Column(name = "followers") Integer followers;
+	Integer followers;
 
 }

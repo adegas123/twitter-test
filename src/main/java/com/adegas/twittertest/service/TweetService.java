@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.slf4j.Logger;
@@ -13,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.adegas.twittertest.model.Tweet;
 import com.adegas.twittertest.repository.TweetRepository;
@@ -25,7 +23,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
-@Component
+@Service
 @EnableScheduling
 public class TweetService {
 	
@@ -35,14 +33,20 @@ public class TweetService {
 	@Autowired
 	private TopUsersByFollowersService topUsersService;
 	
+	@Autowired
+    private JavaSparkContext sc;
+	
 	private static final Logger logger = LoggerFactory.getLogger(TweetService.class);
 	
-	@PostConstruct
 	@Scheduled(cron = "10 * * * * *")
 	public void getTweets() {
 		Set<String> tags = new HashSet<>();
 		tags.add("#devops");
 		tags.add("#apifirst");
+
+		logger.info("Initializing GetTweets Method!");
+		logger.info("Cleaning all previous data...");
+		this.clearAllPreviousData();
 		
 		Twitter twitter = TwitterFactory.getSingleton();
 		
@@ -51,16 +55,20 @@ public class TweetService {
 			.map(this::createQueryForTag)
 			.map(query -> {
 				try {
+					logger.info("Searching for tag: "+query.getQuery());
 					return twitter.search().search(query);
 				} catch (TwitterException e) {
 					throw new RuntimeException();
 				}
-			}).flatMap(this::queryResultToTweet).forEach(this.repository::save);
+			}).flatMap(this::queryResultToTweet).forEach(tweet -> {
+				this.repository.save(tweet);
+				logger.debug("Saving tweet: " + tweet.getId());
+			});
 		
-		JavaSparkContext context = new JavaSparkContext();
-		JavaRDD<Tweet> rdd = context.parallelize(this.repository.findAll()).cache();
-		context.close();
+		logger.info("Uploading data into RDD cache.");
+		JavaRDD<Tweet> rdd = sc.parallelize(this.repository.findAll()).cache();
 		
+		logger.info("Calling process Top 5 service...");
 		this.topUsersService.processTop5(rdd);
 	}
 	
@@ -84,6 +92,12 @@ public class TweetService {
 							query.getUser().getFollowersCount(),
 							query.getLang(),
 							query.getCreatedAt()));
+	}
+	
+	private void clearAllPreviousData() {
+		
+		this.repository.deleteAll();
+		this.topUsersService.deleteAll();
 	}
 
 }

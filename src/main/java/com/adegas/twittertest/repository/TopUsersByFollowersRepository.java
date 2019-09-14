@@ -1,12 +1,10 @@
 package com.adegas.twittertest.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.adegas.twittertest.model.TopUsersByFollowers;
 
-@Repository
-public interface TopUsersByFollowersRepository extends JpaRepository<TopUsersByFollowers, Long>{
+public interface TopUsersByFollowersRepository extends MongoRepository<TopUsersByFollowers, Long>{
 	
 
 }

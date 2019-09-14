@@ -1,23 +1,25 @@
 package com.adegas.twittertest.model;
 
+import java.io.Serializable;
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "posts_by_date_hour")
-@Getter @Setter @AllArgsConstructor @NoArgsConstructor
-public class PostsByDateHour {
+@Getter @Setter 
+@AllArgsConstructor 
+@NoArgsConstructor
+public class PostsByDateHour implements Serializable {
 	
-	@Column(name = "date") Date date;
+	/**
+	 * Serialization number.
+	 */
+	private static final long serialVersionUID = 1826161080613574681L;
+
+	Date date;
 	
-	@Column(name = "count") Integer count;
+	Integer count;
 
 }
