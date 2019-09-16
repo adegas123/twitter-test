@@ -15,7 +15,7 @@ public class SparkConfig {
  
     @Bean
     public SparkConf conf() {
-        return new SparkConf().setAppName(appName).setMaster(masterUri).set("spark.driver.memory", "5242880000");
+        return new SparkConf().setAppName(appName).setMaster(masterUri).set("spark.testing.memory", "4718592000");
     }
  
     @Bean

@@ -2,22 +2,29 @@ version: "3"
 services:
   springboot:
     build: .
-    container_name: twitter-test
     ports:
       - 8182:8080
-    working_dir: /opt/app
     depends_on:
-      - mongo
-      
-  mongo:
-    image: mongo
-    container_name: twitter-test_mongo
+      - mongodb
+    links:
+      - mongodb
+    networks: 
+      - backend
     environment:
-      MONGO_INITDB_DATABASE: twitterdb
-    ports:
-      - "27017:27017"
+      DATABASE_HOST: twitterdb
+      JVM_OPTS: -Xmx6g -Xms6g -XX:MaxPermSize=1024m
+      
+  mongodb: 
+    image: mongo
+    expose:
+      - 27017
     volumes:
       - data-volume:/data/db
     restart: always
+    networks: 
+      - backend
 volumes:
   data-volume:
+  
+networks:
+  backend: 
