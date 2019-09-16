@@ -2,8 +2,6 @@ package com.adegas.twittertest.model;
 
 import java.io.Serializable;
 
-import org.springframework.data.annotation.Id;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,17 +12,19 @@ import lombok.ToString;
 @AllArgsConstructor 
 @NoArgsConstructor
 @ToString
-public class TopUsersByFollowers implements Serializable {
+public class PostsByTagsAndLang implements Serializable {
 	
 	/**
 	 * Serialization number.
 	 */
-	private static final long serialVersionUID = -6888214942819168948L;
+	private static final long serialVersionUID = 3477893715762401957L;
 
-	@Id Long id;
+	String username;
 	
-	String userName;
+	String tag;
 	
-	Integer followers;
+	String lang;
+	
+	Integer count;
 
 }

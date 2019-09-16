@@ -14,7 +14,6 @@
 	<properties>
         <twitter4j.version>4.0.7</twitter4j.version>
         <apache.spark.version>2.4.4</apache.spark.version>
-        <paranamer.version>2.8</paranamer.version>
     </properties>
 	
 	<dependencies>
@@ -40,11 +39,6 @@
 			<groupId>org.apache.spark</groupId>
 			<artifactId>spark-core_2.12</artifactId>
 			<version>${apache.spark.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.thoughtworks.paranamer</groupId>
-			<artifactId>paranamer</artifactId>
-			<version>${paranamer.version}</version>
 		</dependency>
 
 		<dependency>

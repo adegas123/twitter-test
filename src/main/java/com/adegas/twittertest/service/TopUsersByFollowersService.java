@@ -1,5 +1,7 @@
 package com.adegas.twittertest.service;
 
+import java.io.Serializable;
+
 import org.apache.spark.api.java.JavaRDD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,29 +15,30 @@ import com.adegas.twittertest.repository.TopUsersByFollowersRepository;
 import scala.Tuple2;
 
 @Component
-public class TopUsersByFollowersService {
+public class TopUsersByFollowersService implements Serializable {
 	
+	/**
+	 * Serialization number.
+	 */
+	private static final long serialVersionUID = 8692721617266883011L;
+
 	@Autowired
 	private TopUsersByFollowersRepository repository;
-	
-	private static final Logger logger = LoggerFactory.getLogger(TopUsersByFollowersService.class);
-	
+		
 	public void processTop5(JavaRDD<Tweet> rdd) {
 
-		rdd
-				.mapToPair(tweet -> new Tuple2<>(tweet.getFollowers(), tweet))
-				.sortByKey(false)
-				.take(5)
-				.stream()
-				.map(Tuple2::_2)
-				.forEach(topUser -> {
-					logger.info("Saving Top User: " + topUser.getUserName() + " that have: " + topUser.getFollowers() + " followers!");
-					this.saveTopUser(topUser);
-				});
+		JavaRDD<Tweet> localrdd = rdd;
+		localrdd
+			.mapToPair(tweet -> new Tuple2<>(tweet.getFollowers(), tweet))
+			.sortByKey(false)
+			.take(5)
+			.stream()
+			.map(Tuple2::_2)
+			.forEach(this::saveTopUser);
 	}
 	
 	public void deleteAll() {
-		this.repository.deleteAll();
+		repository.deleteAll();
 	}
 
 	private void saveTopUser(Tweet tweet) {
@@ -43,7 +46,7 @@ public class TopUsersByFollowersService {
 											tweet.getUserId(), 
 											tweet.getUserName(), 
 											tweet.getFollowers());
-		this.repository.save(topUser);
+		repository.save(topUser);
 		
 	}
 
