@@ -1,6 +1,8 @@
 package com.adegas.twittertest.service;
 
 import org.apache.spark.api.java.JavaRDD;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +18,8 @@ public class TopUsersByFollowersService {
 	@Autowired
 	private TopUsersByFollowersRepository repository;
 	
+	private static final Logger logger = LoggerFactory.getLogger(TopUsersByFollowersService.class);
+	
 	public void processTop5(JavaRDD<Tweet> rdd) {
 
 		rdd
@@ -24,7 +28,14 @@ public class TopUsersByFollowersService {
 				.take(5)
 				.stream()
 				.map(Tuple2::_2)
-				.forEach(this::saveTopUser);
+				.forEach(topUser -> {
+					logger.info("Saving Top User: " + topUser.getUserName() + " that have: " + topUser.getFollowers() + " followers!");
+					this.saveTopUser(topUser);
+				});
+	}
+	
+	public void deleteAll() {
+		this.repository.deleteAll();
 	}
 
 	private void saveTopUser(Tweet tweet) {
