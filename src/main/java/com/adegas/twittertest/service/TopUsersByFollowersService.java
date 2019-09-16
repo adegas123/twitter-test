@@ -21,6 +21,8 @@ public class TopUsersByFollowersService implements Serializable {
 	 * Serialization number.
 	 */
 	private static final long serialVersionUID = 8692721617266883011L;
+	
+	private static final Logger logger = LoggerFactory.getLogger(TopUsersByFollowers.class);
 
 	@Autowired
 	private TopUsersByFollowersRepository repository;
@@ -35,6 +37,10 @@ public class TopUsersByFollowersService implements Serializable {
 			.stream()
 			.map(Tuple2::_2)
 			.forEach(this::saveTopUser);
+	}
+	
+	public void printAll() {
+		logger.info(repository.findAll().toString());
 	}
 	
 	public void deleteAll() {

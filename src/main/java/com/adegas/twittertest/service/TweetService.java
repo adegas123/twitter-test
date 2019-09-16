@@ -6,7 +6,6 @@ import java.util.stream.Stream;
 
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.storage.StorageLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +17,13 @@ import com.adegas.twittertest.model.Tweet;
 import com.adegas.twittertest.repository.TweetRepository;
 
 import twitter4j.Query;
-import twitter4j.Query.ResultType;
 import twitter4j.QueryResult;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
 @Service
+@EnableScheduling
 public class TweetService {
 	
 	@Autowired
@@ -44,7 +43,7 @@ public class TweetService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TweetService.class);
 	
-	//@Scheduled(cron = "0/20 * * * * *")
+	@Scheduled(cron = "0/20 * * * * *")
 	public void getTweets() {
 		Set<String> tags = new HashSet<>();
 		tags.add("#devops");
@@ -76,6 +75,7 @@ public class TweetService {
 		
 		logger.info("Calling process Top 5 service...");
 		this.topUsersService.processTop5(rdd);
+		this.topUsersService.printAll();
 		
 		logger.info("Calling process Posts By Date and Hour...");
 		this.postsByDateService.processPostsByDateHour(rdd);
@@ -83,14 +83,11 @@ public class TweetService {
 		logger.info("Calling process Posts By Tag and Lang...");
 		this.postsByTagAndLangService.processPostsByTagAndLang(rdd);
 		this.postsByTagAndLangService.printAll();
-		
-		sc.close();
 	}
 	
 	private Query createQueryForTag(String tag) {
 		Query query = new Query();
 		query.setQuery(tag);
-		query.setResultType(ResultType.recent);
 		
 		return query;
 	}
