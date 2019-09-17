@@ -17,7 +17,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-mongoose.connect('mongodb://localhost:27017/twitterdb')
+mongoose.connect('mongodb://mongodb:27017/twitterdb')
   .then(() => console.log('connection successfull'))
   .catch((err) => console.error(err));
 
