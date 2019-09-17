@@ -8,4 +8,4 @@ WORKDIR $PROJECT_HOME
 
 COPY target/twitter-test-0.0.1-SNAPSHOT.jar $PROJECT_HOME/twitter-test.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-Dspring.data.mongodb.uri=mongodb://mongodb:27017/twitterdb","-jar","twitter-test.jar"]
+CMD ["java","-Dspring.data.mongodb.uri=mongodb://mongodb:27017/twitterdb","-jar","twitter-test.jar"]
