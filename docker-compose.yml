@@ -1,18 +1,26 @@
 version: "3"
 services:
-  springboot:
-    build: .
+
+  nodejs:
+    build: ./src/nodejs
+    command: npm start
     ports:
-      - 8182:8080
+      - "3000:3000"
+    depends_on:
+      - server
+    networks:
+      - backend
+      
+  server:
+    build: .
+    ports: 
+      - "8182:8080"
     depends_on:
       - mongodb
     links:
       - mongodb
     networks: 
       - backend
-    environment:
-      DATABASE_HOST: twitterdb
-      JVM_OPTS: -Xmx6g -Xms6g -XX:MaxPermSize=1024m
       
   mongodb: 
     image: mongo
@@ -25,6 +33,7 @@ services:
       - backend
 volumes:
   data-volume:
+  node_modules: 
   
 networks:
   backend: 
