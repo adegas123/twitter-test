@@ -28,6 +28,8 @@ services:
       - 27017
     volumes:
       - data-volume:/data/db
+    environment:
+      - MONGODB_DATABASE=twitterdb
     restart: always
     networks: 
       - backend

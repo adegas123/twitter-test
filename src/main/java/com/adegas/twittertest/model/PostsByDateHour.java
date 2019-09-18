@@ -18,7 +18,7 @@ public class PostsByDateHour implements Serializable {
 	 */
 	private static final long serialVersionUID = 1826161080613574681L;
 
-	Date date;
+	String hour;
 	
 	Integer count;
 

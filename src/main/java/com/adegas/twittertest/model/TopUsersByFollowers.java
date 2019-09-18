@@ -26,5 +26,7 @@ public class TopUsersByFollowers implements Serializable {
 	String userName;
 	
 	Integer followers;
+	
+	private Long userId;
 
 }

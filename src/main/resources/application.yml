@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://mongodb/twitterdb
+      uri: mongodb://localhost:27017/twitterdb
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -11,22 +11,22 @@ spring:
       client:
         registration:
           google:
-            clientId: 5014057553-8gm9um6vnli3cle5rgigcdjpdrid14m9.apps.googleusercontent.com
-            clientSecret: tWZKVLxaD_ARWsriiiUFYoIk
+            clientId: 948288562205-c6ngju60eqth6v9r5atq1vem96v23pdd.apps.googleusercontent.com
+            clientSecret: Xs6rcU5sNnARDuTEK_LUtkTk
             redirectUriTemplate: "{baseUrl}/oauth2/callback/{registrationId}"
             scope:
               - email
               - profile
           facebook:
-            clientId: 121189305185277
-            clientSecret: 42ffe5aa7379e8326387e0fe16f34132
+            clientId: 530582964380139
+            clientSecret: f71f5de35d5cc1451b550aa214f8242d
             redirectUriTemplate: "{baseUrl}/oauth2/callback/{registrationId}"
             scope:
               - email
               - public_profile
           github:
-            clientId: d3e47fc2ddd966fa4352
-            clientSecret: 3bc0f6b8332f93076354c2a5bada2f5a05aea60d
+            clientId: a8f736fe89fb38f23a51
+            clientSecret: 28141c71c4b80b3cf77666bb543a8fc94f4c7d4c
             redirectUriTemplate: "{baseUrl}/oauth2/callback/{registrationId}"
             scope:
               - user:email

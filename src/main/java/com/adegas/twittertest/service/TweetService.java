@@ -43,7 +43,7 @@ public class TweetService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TweetService.class);
 	
-	@Scheduled(cron = "0/20 * * * * *")
+	@Scheduled(cron = "0 0/1 * * * *")
 	public void getTweets() {
 		Set<String> tags = new HashSet<>();
 		tags.add("#devops");
@@ -78,7 +78,7 @@ public class TweetService {
 		this.topUsersService.printAll();
 		
 		logger.info("Calling process Posts By Date and Hour...");
-		this.postsByDateService.processPostsByDateHour(rdd);
+		this.postsByDateService.processPostsByHour(rdd);
 		
 		logger.info("Calling process Posts By Tag and Lang...");
 		this.postsByTagAndLangService.processPostsByTagAndLang(rdd);

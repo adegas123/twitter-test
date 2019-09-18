@@ -51,7 +51,8 @@ public class TopUsersByFollowersService implements Serializable {
 		TopUsersByFollowers topUser = new TopUsersByFollowers(
 											tweet.getUserId(), 
 											tweet.getUserName(), 
-											tweet.getFollowers());
+											tweet.getFollowers(),
+											tweet.getUserId());
 		repository.save(topUser);
 		
 	}

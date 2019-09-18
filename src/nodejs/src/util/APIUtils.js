@@ -23,6 +23,39 @@ const request = (options) => {
     );
 };
 
+export function getTopUsers() {
+    if(!localStorage.getItem(ACCESS_TOKEN)) {
+        return Promise.reject("No access token set.");
+    }
+
+    return request({
+        url: API_BASE_URL + "/api/top-users",
+        method: 'GET'
+    });
+}
+
+export function getPostsByTime() {
+    if(!localStorage.getItem(ACCESS_TOKEN)) {
+        return Promise.reject("No access token set.");
+    }
+
+    return request({
+        url: API_BASE_URL + "/api/posts-by-time",
+        method: 'GET'
+    });
+}
+
+export function getPostsByTagLang() {
+    if(!localStorage.getItem(ACCESS_TOKEN)) {
+        return Promise.reject("No access token set.");
+    }
+
+    return request({
+        url: API_BASE_URL + "/api/posts-by-tag-lang",
+        method: 'GET'
+    });
+}
+
 export function getCurrentUser() {
     if(!localStorage.getItem(ACCESS_TOKEN)) {
         return Promise.reject("No access token set.");

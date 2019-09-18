@@ -3,6 +3,7 @@ package com.adegas.twittertest.util;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
@@ -25,5 +26,12 @@ public class TwitterTestUtil implements Serializable {
 		LocalDateTime dateTime = toLocalDateTime(date);
 	
 		return dateTime.truncatedTo(ChronoUnit.HOURS);
+	}
+	
+	public static String convertDateAndReturnHour(Date date) {
+		LocalDateTime dateTime = toLocalDateTime(date);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH");
+		
+		return dateTime.format(formatter);
 	}
 }
