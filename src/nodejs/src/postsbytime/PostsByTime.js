@@ -1,25 +1,7 @@
 import React, { Component } from 'react';
 import './PostsByTime.css';
 import { getPostsByTime } from '../util/APIUtils';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis } from 'recharts';
-const data = [
-    {name: 'Page A', uv: 4000, pv: 2400, amt: 2400},
-    {name: 'Page B', uv: 3000, pv: 1398, amt: 2210},
-    {name: 'Page C', uv: 2000, pv: 9800, amt: 2290},
-    {name: 'Page D', uv: 2780, pv: 3908, amt: 2000},
-    {name: 'Page E', uv: 1890, pv: 4800, amt: 2181},
-    {name: 'Page F', uv: 2390, pv: 3800, amt: 2500},
-    {name: 'Page G', uv: 3490, pv: 4300, amt: 2100},
-];
-
-const renderLineChart = (
-  <LineChart width={600} height={300} data={data}>
-    <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-    <CartesianGrid stroke="#ccc" />
-    <XAxis dataKey="name" />
-    <YAxis />
-  </LineChart>
-);
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 class PostsByTime extends Component {
     
@@ -27,8 +9,10 @@ class PostsByTime extends Component {
         super(props);
         console.log(props);
         this.state = {
-            posts: [],
-            dataChart: []
+            dataChart: [],
+            opacity: {
+                uv: 1
+              }
         }
     }
 
@@ -38,35 +22,64 @@ class PostsByTime extends Component {
     getPostsByTimeList = async() => {
         try {
             getPostsByTime().then((value) => {
-                let items = []
-                value.foreach((post) => {
-                    let item = {
-                        hour: post.hour,
-                        count: post.count
+                var array = ['hour', 'count'];
+                var newList = [];
+
+                for(var item in value) {
+                    var newData = {}
+
+                    for (var a in array) {
+                        if(a === '0') {
+                         newData[array[a]] = value[item][Object.keys(value[item])[a]] + "h";
+                        } else {
+                          newData[array[a]] = value[item][Object.keys(value[item])[a]];
+                        }
                     }
-                    items.push(item);
-                });
-                this.setState({dataChart: items});
-                console.log(this.state.dataChart)
+                    newList.push(newData);
+                }
+                console.log(newList);
+                this.setState({dataChart: newList});
             })
         } catch (err) {
           console.log(err);
         }
     }
+    handleMouseEnter = (o) => {
+        const { dataKey } = o;
+        const { opacity } = this.state;
+    
+        this.setState({
+          opacity: { ...opacity, [dataKey]: 0.5 },
+        });
+      }
+    handleMouseLeave = (o) => {
+        const { dataKey } = o;
+        const { opacity } = this.state;
+    
+        this.setState({
+          opacity: { ...opacity, [dataKey]: 1 },
+        });
+      }
     render() {
+        const { opacity } = this.state;
         return (
             <div className="topuser-container">
                 <div className="container">
                     <div className="topuser-info">
                         <div className="topuser-name">
-                            <h2>Posts by Time</h2>
-                            {renderLineChart}
-                           <ul className="list-group">{this.state.posts.map((post, i) => (
-                               <li key={i} className="list-group-item">
-                                    {post.hour} - qty: {post.count}
-                                </li>
-                                ))}
-                            </ul>
+                            <h2>Posts along the day</h2>
+                            <div style={{ width: '100%', height: 300 }}>
+                                <ResponsiveContainer>
+                                    <LineChart data={this.state.dataChart} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="hour" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Legend onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} />
+                                        <Line type="monotone" dataKey="count" strokeOpacity={opacity.uv} stroke="#82ca9d" activeDot={{ r: 8 }} />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
                     </div>
                 </div>    

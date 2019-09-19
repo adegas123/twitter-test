@@ -21,7 +21,7 @@ class AppHeader extends Component {
                                             <NavLink to="/posts-by-time">Posts By Time</NavLink>
                                         </li>
                                         <li>
-                                            <NavLink to="/posts-by-tag-lang">Posts By Country</NavLink>
+                                            <NavLink to="/posts-by-tag-lang">Posts By Tag/Lang</NavLink>
                                         </li>
                                         <li>
                                             <NavLink to="/profile">Profile</NavLink>

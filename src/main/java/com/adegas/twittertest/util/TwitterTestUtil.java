@@ -1,11 +1,16 @@
 package com.adegas.twittertest.util;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 public class TwitterTestUtil implements Serializable {
 
@@ -28,10 +33,10 @@ public class TwitterTestUtil implements Serializable {
 		return dateTime.truncatedTo(ChronoUnit.HOURS);
 	}
 	
-	public static String convertDateAndReturnHour(Date date) {
-		LocalDateTime dateTime = toLocalDateTime(date);
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH");
-		
-		return dateTime.format(formatter);
+	public static String convertDateAndReturnHour(Date date, TimeZone timezone) {
+		Calendar cal = GregorianCalendar.getInstance();
+		cal.setTime(date);
+		DateFormat formatter = new SimpleDateFormat("HH");
+		return formatter.format(cal.getTime());
 	}
 }

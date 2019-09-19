@@ -1,6 +1,7 @@
 package com.adegas.twittertest.service;
 
 import java.io.Serializable;
+import java.util.TimeZone;
 
 import org.apache.spark.api.java.JavaRDD;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class PostsByDateHourService implements Serializable {
 	public void processPostsByHour(JavaRDD<Tweet> rdd) {
 
 		rdd
-			.mapToPair(tweet -> new Tuple2<>(TwitterTestUtil.convertDateAndReturnHour(tweet.getCreatedAt()), 1))
+			.mapToPair(tweet -> new Tuple2<>(TwitterTestUtil.convertDateAndReturnHour(tweet.getCreatedAt(), TimeZone.getTimeZone("BRT")), 1))
 			.reduceByKey((c1, c2) -> c1 + c2)
 			.sortByKey()
 			.collect()

@@ -10,6 +10,7 @@ import com.adegas.twittertest.repository.PostsByDateHourRepository;
 import com.adegas.twittertest.repository.PostsByTagsAndLangRepository;
 import com.adegas.twittertest.repository.TopUsersByFollowersRepository;
 
+
 @RestController
 public class WebController {
 

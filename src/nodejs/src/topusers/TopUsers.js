@@ -16,7 +16,6 @@ class TopUsers extends Component {
     }
     getTopUsersList = async() => {
         try {
-            getTopUsers().then(topusers => console.log(topusers));
             getTopUsers().then((value) => this.setState({topusers: value}));
         } catch (err) {
           console.log(err);

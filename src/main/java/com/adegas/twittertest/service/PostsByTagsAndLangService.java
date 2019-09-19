@@ -28,18 +28,21 @@ public class PostsByTagsAndLangService implements Serializable {
 	private static final Logger logger = LoggerFactory.getLogger(PostsByDateHourService.class);
 
 	public void processPostsByTagAndLang(JavaRDD<Tweet> rdd) {
-		JavaRDD<Tweet> rdd2 = rdd;
-
+		// pegar uma lista das tags - ok
+		// percorrer os tweets e filtrar por cada lang da lista
+		// reduzir incrementando o count
 		rdd
+			.mapToPair(tw -> new Tuple2<>(tw.getTag(), 1))
+			.reduceByKey((a, b) -> a + b)
 			.collect()
-			.forEach(tweet -> {
-				rdd2
-				.filter(tw -> tw.getLang().equals(tweet.getLang()) && tw.getTag().equals(tweet.getTag()))
-				.mapToPair(tw -> new Tuple2<>(tw.getTag(), 1))
-				.reduceByKey((count1, count2) -> count1 + count2)
-				.collect()
-				.stream()
-				.forEach(tuple -> savePostsByTagsAndLang(tweet.getUserName(), tuple, tweet.getLang()));
+			.forEach(tag -> {
+				rdd
+					.filter(tw -> tw.getTag().equals(tag._1()))
+					.mapToPair(tw -> new Tuple2<>(tw.getLang(), 1))
+					.reduceByKey((count1, count2) -> count1 + count2)
+					.collect()
+					.stream()
+					.forEach(tuple -> savePostsByTagsAndLang(tuple, tag._1()));
 			});
 	}
 	
@@ -51,11 +54,10 @@ public class PostsByTagsAndLangService implements Serializable {
 		logger.info(this.repository.findAll().toString());
 	}
 
-	private void savePostsByTagsAndLang(String username, Tuple2<String, Integer> tuple, String lang) {
+	private void savePostsByTagsAndLang(Tuple2<String, Integer> tuple, String tag) {
 		PostsByTagsAndLang post = new PostsByTagsAndLang(
-														username,
+														tag,
 														tuple._1(),
-														lang,
 														tuple._2());
 		this.repository.save(post);
 		

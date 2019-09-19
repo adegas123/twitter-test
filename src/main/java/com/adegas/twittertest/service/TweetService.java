@@ -17,6 +17,7 @@ import com.adegas.twittertest.model.Tweet;
 import com.adegas.twittertest.repository.TweetRepository;
 
 import twitter4j.Query;
+import twitter4j.Query.ResultType;
 import twitter4j.QueryResult;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -43,11 +44,19 @@ public class TweetService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TweetService.class);
 	
-	@Scheduled(cron = "0 0/1 * * * *")
+	@Scheduled(cron = "0 0/5 * * * *")
 	public void getTweets() {
 		Set<String> tags = new HashSet<>();
 		tags.add("#devops");
 		tags.add("#apifirst");
+		tags.add("#openbanking");
+		tags.add("#cloudfirst");
+		tags.add("#microservices");
+		tags.add("#apigateway");
+		tags.add("#oauth");
+		tags.add("#swagger");
+		tags.add("#raml");
+		tags.add("#openapis");
 
 		logger.info("Initializing GetTweets Method!");
 		logger.info("Cleaning all previous data...");
@@ -60,7 +69,7 @@ public class TweetService {
 			.map(this::createQueryForTag)
 			.map(query -> {
 				try {
-					logger.info("Searching for tag: "+query.getQuery());
+					logger.debug("Searching for tag: "+query.getQuery());
 					return twitter.search().search(query);
 				} catch (TwitterException e) {
 					throw new RuntimeException();
@@ -75,19 +84,21 @@ public class TweetService {
 		
 		logger.info("Calling process Top 5 service...");
 		this.topUsersService.processTop5(rdd);
-		this.topUsersService.printAll();
+		//this.topUsersService.printAll();
 		
 		logger.info("Calling process Posts By Date and Hour...");
 		this.postsByDateService.processPostsByHour(rdd);
 		
 		logger.info("Calling process Posts By Tag and Lang...");
 		this.postsByTagAndLangService.processPostsByTagAndLang(rdd);
-		this.postsByTagAndLangService.printAll();
+		//this.postsByTagAndLangService.printAll();
 	}
 	
 	private Query createQueryForTag(String tag) {
 		Query query = new Query();
 		query.setQuery(tag);
+		query.setResultType(ResultType.recent);
+		query.setCount(100);
 		
 		return query;
 	}

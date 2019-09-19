@@ -18,8 +18,6 @@ public class PostsByTagsAndLang implements Serializable {
 	 * Serialization number.
 	 */
 	private static final long serialVersionUID = 3477893715762401957L;
-
-	String username;
 	
 	String tag;
 	
